@@ -8,6 +8,8 @@ Complete guide for managing the Cafe Engine repository on GitHub.
 - **Account:** MarcusLai07 (personal)
 - **Email:** Marcus_Lai@live.com
 
+---
+
 ## Initial Setup (One-Time)
 
 ### Option A: GitHub CLI (Recommended)
@@ -68,93 +70,875 @@ pbcopy < ~/.ssh/id_ed25519.pub
 git remote set-url origin git@github.com:MarcusLai07/cafe-engine.git
 ```
 
-## Daily Workflow
+---
 
-### Check Status
+## Git Commands - Complete Reference
+
+### Configuration
 
 ```bash
-# See what's changed
+# Set user for THIS repo only
+git config user.name "MarcusLai07"
+git config user.email "Marcus_Lai@live.com"
+
+# Set user globally (all repos)
+git config --global user.name "MarcusLai07"
+git config --global user.email "Marcus_Lai@live.com"
+
+# View all config
+git config --list
+
+# View specific config
+git config user.name
+git config user.email
+
+# Set default branch name
+git config --global init.defaultBranch main
+
+# Set default editor
+git config --global core.editor "code --wait"  # VS Code
+git config --global core.editor "nano"          # Nano
+git config --global core.editor "vim"           # Vim
+
+# Enable colored output
+git config --global color.ui auto
+
+# Set line ending handling (macOS)
+git config --global core.autocrlf input
+
+# Create aliases
+git config --global alias.st status
+git config --global alias.co checkout
+git config --global alias.br branch
+git config --global alias.ci commit
+git config --global alias.lg "log --oneline --graph --all"
+```
+
+---
+
+### Getting & Creating Repositories
+
+```bash
+# Initialize new repo in current directory
+git init
+
+# Initialize with specific branch name
+git init -b main
+
+# Clone existing repository
+git clone https://github.com/MarcusLai07/cafe-engine.git
+
+# Clone into specific folder
+git clone https://github.com/MarcusLai07/cafe-engine.git my-folder
+
+# Clone specific branch
+git clone -b phase-3 https://github.com/MarcusLai07/cafe-engine.git
+
+# Shallow clone (faster, less history)
+git clone --depth 1 https://github.com/MarcusLai07/cafe-engine.git
+
+# Clone with submodules
+git clone --recursive https://github.com/user/repo.git
+```
+
+---
+
+### Status & Information
+
+```bash
+# Check status (what's changed)
 git status
 
-# See detailed changes
-git diff
+# Short status
+git status -s
 
-# See commit history
-git log --oneline -10
+# Show which branch you're on
+git branch --show-current
+
+# Show remote URLs
+git remote -v
+
+# Show detailed remote info
+git remote show origin
+
+# Show last commit
+git log -1
+
+# Show all branches (local)
+git branch
+
+# Show all branches (including remote)
+git branch -a
+
+# Show branches with last commit
+git branch -v
+
+# Show tracking info
+git branch -vv
 ```
 
-### Save Your Work (Commit)
+---
+
+### Staging & Committing
 
 ```bash
-# Stage specific files
-git add src/main.cpp src/renderer/
+# Stage specific file
+git add src/main.cpp
 
-# Or stage everything
+# Stage specific folder
+git add src/renderer/
+
+# Stage multiple files
+git add file1.cpp file2.cpp file3.cpp
+
+# Stage all changes (new, modified, deleted)
 git add .
+git add -A
+git add --all
+
+# Stage only modified and deleted (not new files)
+git add -u
+
+# Stage interactively (choose hunks)
+git add -p
+
+# Stage with dry-run (see what would be added)
+git add -n .
+
+# Unstage a file (keep changes)
+git reset HEAD src/main.cpp
+git restore --staged src/main.cpp  # Modern alternative
 
 # Commit with message
-git commit -m "Phase 3: Add WebGL renderer backend"
+git commit -m "feat: Add customer spawning"
 
-# Or multi-line commit
-git commit -m "Phase 3.2: WebGL backend implementation
+# Commit with multi-line message
+git commit -m "feat: Add customer spawning
 
-- Created webgl_renderer.cpp
-- Implemented sprite batching
-- Added shader compilation"
+- Implemented spawn timer
+- Added customer pool
+- Connected to entity manager"
+
+# Commit with editor (opens default editor)
+git commit
+
+# Commit all tracked changes (skip staging)
+git commit -a -m "Quick fix"
+git commit -am "Quick fix"  # Shorthand
+
+# Amend last commit (change message or add files)
+git commit --amend -m "New message"
+git commit --amend --no-edit  # Keep same message, add staged files
+
+# Commit with date
+git commit --date="2024-01-15 10:00:00" -m "Message"
+
+# Empty commit (useful for triggering CI)
+git commit --allow-empty -m "Trigger build"
 ```
 
-### Push to GitHub
+---
+
+### Pulling & Fetching (Getting Changes from Remote)
+
+```bash
+# Fetch changes (download but don't merge)
+git fetch
+
+# Fetch from specific remote
+git fetch origin
+
+# Fetch specific branch
+git fetch origin main
+
+# Fetch all remotes
+git fetch --all
+
+# Fetch and prune deleted remote branches
+git fetch --prune
+git fetch -p  # Shorthand
+
+# Pull (fetch + merge)
+git pull
+
+# Pull from specific remote/branch
+git pull origin main
+
+# Pull with rebase instead of merge (cleaner history)
+git pull --rebase
+git pull -r  # Shorthand
+
+# Pull and autostash local changes
+git pull --autostash
+
+# Pull specific branch into current
+git pull origin feature-branch
+
+# Pull and fast-forward only (fail if can't fast-forward)
+git pull --ff-only
+
+# Set pull to rebase by default
+git config --global pull.rebase true
+
+# Set pull to fast-forward only by default
+git config --global pull.ff only
+```
+
+---
+
+### Pushing (Sending Changes to Remote)
 
 ```bash
 # Push current branch
 git push
 
-# If it's a new branch
-git push -u origin branch-name
+# Push to specific remote/branch
+git push origin main
+
+# Push and set upstream (first push of new branch)
+git push -u origin feature-branch
+git push --set-upstream origin feature-branch
+
+# Push all branches
+git push --all
+
+# Push tags
+git push --tags
+
+# Push specific tag
+git push origin v1.0.0
+
+# Force push (DANGEROUS - overwrites remote)
+git push --force
+git push -f
+
+# Force push with lease (safer - fails if remote changed)
+git push --force-with-lease
+
+# Delete remote branch
+git push origin --delete branch-name
+git push origin :branch-name  # Alternative syntax
+
+# Push to different remote branch
+git push origin local-branch:remote-branch
+
+# Dry-run (see what would be pushed)
+git push --dry-run
+git push -n
 ```
 
-### Pull Latest Changes
+---
+
+### Branching
 
 ```bash
-# If working from multiple machines
+# List local branches
+git branch
+
+# List remote branches
+git branch -r
+
+# List all branches
+git branch -a
+
+# List branches with details
+git branch -v
+git branch -vv  # With tracking info
+
+# Create new branch
+git branch feature-name
+
+# Create and switch to new branch
+git checkout -b feature-name
+git switch -c feature-name  # Modern alternative
+
+# Switch to existing branch
+git checkout main
+git switch main  # Modern alternative
+
+# Switch to previous branch
+git checkout -
+git switch -
+
+# Rename current branch
+git branch -m new-name
+
+# Rename specific branch
+git branch -m old-name new-name
+
+# Delete branch (only if merged)
+git branch -d branch-name
+
+# Force delete branch (even if not merged)
+git branch -D branch-name
+
+# Delete remote branch
+git push origin --delete branch-name
+
+# Create branch from specific commit
+git branch feature-name abc1234
+
+# Create branch from tag
+git branch hotfix v1.0.0
+
+# Track remote branch
+git branch --track local-branch origin/remote-branch
+
+# Set upstream for existing branch
+git branch -u origin/main
+git branch --set-upstream-to=origin/main
+```
+
+---
+
+### Merging
+
+```bash
+# Merge branch into current
+git merge feature-branch
+
+# Merge with commit message
+git merge feature-branch -m "Merge feature into main"
+
+# Merge without fast-forward (always create merge commit)
+git merge --no-ff feature-branch
+
+# Fast-forward only (fail if can't)
+git merge --ff-only feature-branch
+
+# Abort merge (during conflicts)
+git merge --abort
+
+# Continue merge after resolving conflicts
+git add .
+git merge --continue
+# Or just commit
+git commit
+
+# Squash merge (combine all commits into one)
+git merge --squash feature-branch
+git commit -m "Squashed feature"
+
+# Check if branch is merged
+git branch --merged
+git branch --no-merged
+```
+
+---
+
+### Rebasing
+
+```bash
+# Rebase current branch onto main
+git rebase main
+
+# Rebase onto specific branch
+git rebase target-branch
+
+# Interactive rebase (edit, squash, reorder commits)
+git rebase -i HEAD~5          # Last 5 commits
+git rebase -i main            # All commits since main
+git rebase -i --root          # All commits
+
+# Abort rebase
+git rebase --abort
+
+# Continue rebase after resolving conflicts
+git add .
+git rebase --continue
+
+# Skip current commit during rebase
+git rebase --skip
+
+# Rebase with autostash
+git rebase --autostash main
+
+# Pull with rebase
+git pull --rebase origin main
+```
+
+**Interactive Rebase Commands:**
+```
+pick   = use commit
+reword = use commit but edit message
+edit   = use commit but stop to amend
+squash = meld into previous commit
+fixup  = like squash but discard message
+drop   = remove commit
+```
+
+---
+
+### Viewing History & Differences
+
+```bash
+# View commit history
+git log
+
+# Compact one-line format
+git log --oneline
+
+# With graph
+git log --graph
+git log --oneline --graph
+
+# Show all branches in graph
+git log --oneline --graph --all
+
+# Limit number of commits
+git log -n 10
+git log -10  # Shorthand
+
+# Show commits by author
+git log --author="MarcusLai07"
+
+# Show commits in date range
+git log --after="2024-01-01" --before="2024-12-31"
+git log --since="2 weeks ago"
+git log --until="yesterday"
+
+# Search commit messages
+git log --grep="fix"
+git log --grep="Phase 3"
+
+# Show commits that changed a file
+git log -- src/main.cpp
+git log -p -- src/main.cpp  # With diff
+
+# Show commits that added/removed string
+git log -S "function_name"
+
+# Format output
+git log --pretty=format:"%h %an %ar - %s"
+git log --pretty=oneline
+git log --pretty=short
+git log --pretty=full
+
+# Show statistics
+git log --stat
+git log --shortstat
+
+# Show diff
+git diff
+
+# Diff staged changes
+git diff --staged
+git diff --cached  # Same thing
+
+# Diff between commits
+git diff abc1234 def5678
+
+# Diff between branches
+git diff main feature-branch
+git diff main..feature-branch
+
+# Diff specific file
+git diff src/main.cpp
+git diff HEAD~3 src/main.cpp  # Compare with 3 commits ago
+
+# Show word-level diff
+git diff --word-diff
+
+# Show stat only
+git diff --stat
+
+# Show names of changed files only
+git diff --name-only
+git diff --name-status  # With status (A/M/D)
+
+# Show specific commit
+git show abc1234
+git show HEAD
+git show HEAD~2  # 2 commits ago
+
+# Show file at specific commit
+git show abc1234:src/main.cpp
+
+# Who changed each line (blame)
+git blame src/main.cpp
+git blame -L 10,20 src/main.cpp  # Lines 10-20
+git blame -e src/main.cpp  # Show email
+```
+
+---
+
+### Undoing Changes
+
+```bash
+# Discard changes in working directory
+git checkout -- src/main.cpp
+git restore src/main.cpp  # Modern alternative
+
+# Discard all changes in working directory
+git checkout -- .
+git restore .
+
+# Unstage file (keep changes)
+git reset HEAD src/main.cpp
+git restore --staged src/main.cpp
+
+# Unstage all files
+git reset HEAD
+git restore --staged .
+
+# Undo last commit (keep changes staged)
+git reset --soft HEAD~1
+
+# Undo last commit (keep changes unstaged)
+git reset HEAD~1
+git reset --mixed HEAD~1  # Same thing
+
+# Undo last commit (discard changes) - DANGEROUS
+git reset --hard HEAD~1
+
+# Reset to specific commit - DANGEROUS
+git reset --hard abc1234
+
+# Reset to remote state - DANGEROUS
+git reset --hard origin/main
+
+# Create new commit that undoes a commit
+git revert abc1234
+git revert HEAD  # Revert last commit
+
+# Revert without committing
+git revert --no-commit abc1234
+
+# Revert merge commit
+git revert -m 1 merge-commit-hash
+
+# Clean untracked files (dry-run first!)
+git clean -n        # Dry-run
+git clean -f        # Force delete files
+git clean -fd       # Delete files and directories
+git clean -fdx      # Also delete ignored files
+```
+
+---
+
+### Stashing
+
+```bash
+# Stash current changes
+git stash
+
+# Stash with message
+git stash save "Work in progress on feature"
+git stash push -m "WIP feature"  # Modern syntax
+
+# Stash including untracked files
+git stash -u
+git stash --include-untracked
+
+# Stash including ignored files
+git stash -a
+git stash --all
+
+# List stashes
+git stash list
+
+# Show stash contents
+git stash show
+git stash show -p              # With diff
+git stash show stash@{1}       # Specific stash
+
+# Apply latest stash (keep in stash list)
+git stash apply
+
+# Apply specific stash
+git stash apply stash@{2}
+
+# Apply and remove from stash list
+git stash pop
+git stash pop stash@{1}
+
+# Drop specific stash
+git stash drop stash@{1}
+
+# Clear all stashes
+git stash clear
+
+# Create branch from stash
+git stash branch new-branch-name
+git stash branch new-branch stash@{1}
+```
+
+---
+
+### Tags
+
+```bash
+# List tags
+git tag
+git tag -l
+git tag -l "v1.*"  # Pattern match
+
+# Create lightweight tag
+git tag v1.0.0
+
+# Create annotated tag (recommended)
+git tag -a v1.0.0 -m "Phase 2 complete"
+
+# Tag specific commit
+git tag -a v1.0.0 abc1234 -m "Message"
+
+# Show tag info
+git show v1.0.0
+
+# Push single tag
+git push origin v1.0.0
+
+# Push all tags
+git push --tags
+git push origin --tags
+
+# Delete local tag
+git tag -d v1.0.0
+
+# Delete remote tag
+git push origin --delete v1.0.0
+git push origin :refs/tags/v1.0.0
+
+# Checkout tag (detached HEAD)
+git checkout v1.0.0
+
+# Create branch from tag
+git checkout -b hotfix v1.0.0
+```
+
+---
+
+### Remote Repositories
+
+```bash
+# List remotes
+git remote
+git remote -v  # With URLs
+
+# Add remote
+git remote add origin https://github.com/MarcusLai07/cafe-engine.git
+git remote add upstream https://github.com/original/repo.git
+
+# Remove remote
+git remote remove origin
+git remote rm origin
+
+# Rename remote
+git remote rename origin old-origin
+
+# Change remote URL
+git remote set-url origin https://github.com/MarcusLai07/new-repo.git
+
+# Show remote details
+git remote show origin
+
+# Prune stale remote tracking branches
+git remote prune origin
+
+# Fetch from all remotes
+git fetch --all
+
+# Update remote refs
+git remote update
+```
+
+---
+
+### Cherry-Pick
+
+```bash
+# Apply specific commit to current branch
+git cherry-pick abc1234
+
+# Cherry-pick multiple commits
+git cherry-pick abc1234 def5678
+
+# Cherry-pick range of commits
+git cherry-pick abc1234..def5678
+
+# Cherry-pick without committing
+git cherry-pick --no-commit abc1234
+git cherry-pick -n abc1234
+
+# Abort cherry-pick
+git cherry-pick --abort
+
+# Continue after resolving conflicts
+git cherry-pick --continue
+```
+
+---
+
+### Submodules
+
+```bash
+# Add submodule
+git submodule add https://github.com/user/lib.git libs/lib
+
+# Initialize submodules (after cloning)
+git submodule init
+git submodule update
+# Or combined
+git submodule update --init
+
+# Update all submodules to latest
+git submodule update --remote
+
+# Clone with submodules
+git clone --recursive https://github.com/user/repo.git
+
+# Remove submodule
+git submodule deinit libs/lib
+git rm libs/lib
+```
+
+---
+
+### Debugging & Finding Issues
+
+```bash
+# Find which commit introduced a bug (binary search)
+git bisect start
+git bisect bad                 # Current commit is bad
+git bisect good abc1234        # This commit was good
+# Git checks out middle commit, you test, then:
+git bisect good  # or
+git bisect bad
+# Repeat until found, then:
+git bisect reset
+
+# Automated bisect with test script
+git bisect start HEAD abc1234
+git bisect run ./test-script.sh
+
+# Find who changed a line
+git blame src/main.cpp
+
+# Search for string in all commits
+git log -S "search_term"
+
+# Search with regex
+git log -G "pattern.*regex"
+
+# Find commits that changed function
+git log -L :function_name:src/main.cpp
+```
+
+---
+
+### Maintenance & Optimization
+
+```bash
+# Garbage collection
+git gc
+
+# Aggressive garbage collection
+git gc --aggressive
+
+# Check repository integrity
+git fsck
+
+# Show object sizes
+git count-objects -v
+
+# Prune unreachable objects
+git prune
+
+# Repack repository
+git repack -a -d
+```
+
+---
+
+## Daily Workflow Examples
+
+### Basic Daily Workflow
+
+```bash
+# Start of day - get latest changes
+git fetch
+git pull
+
+# Work on code...
+
+# Check what changed
+git status
+git diff
+
+# Stage and commit
+git add .
+git commit -m "feat: Implement feature X"
+
+# Push changes
+git push
+```
+
+### Feature Branch Workflow
+
+```bash
+# Create feature branch
+git checkout main
+git pull
+git checkout -b feature/customer-spawning
+
+# Work on feature...
+git add .
+git commit -m "feat: Add spawn timer"
+
+# More work...
+git add .
+git commit -m "feat: Add customer pool"
+
+# Push feature branch
+git push -u origin feature/customer-spawning
+
+# When done - merge to main
+git checkout main
+git pull
+git merge feature/customer-spawning
+git push
+
+# Clean up
+git branch -d feature/customer-spawning
+git push origin --delete feature/customer-spawning
+```
+
+### Sync with Remote (Multiple Machines)
+
+```bash
+# On machine A - push your work
+git add .
+git commit -m "Progress on machine A"
+git push
+
+# On machine B - get the changes
+git fetch
+git pull
+
+# Work on machine B...
+git add .
+git commit -m "Progress on machine B"
+git push
+
+# Back on machine A
 git pull
 ```
 
-## Branching Strategy
-
-### Recommended: Branch Per Phase
+### Fix Mistake in Last Commit
 
 ```bash
-# Create branch for new phase
-git checkout -b phase-3-renderer
+# Forgot to add a file
+git add forgotten-file.cpp
+git commit --amend --no-edit
 
-# Work on the phase...
-git add .
-git commit -m "Phase 3.1: Design renderer interface"
+# Wrong commit message
+git commit --amend -m "Correct message"
 
-# Push branch
-git push -u origin phase-3-renderer
-
-# When phase complete, merge to main
-git checkout main
-git merge phase-3-renderer
-git push
-
-# Delete branch (optional)
-git branch -d phase-3-renderer
+# Already pushed? Force push (only if working alone!)
+git push --force-with-lease
 ```
 
-### Alternative: Work on Main
-
-For solo projects, working directly on `main` is fine:
-
-```bash
-git checkout main
-# Work...
-git add .
-git commit -m "Description"
-git push
-```
+---
 
 ## Commit Message Format
 
@@ -176,199 +960,172 @@ git push
 | `refactor` | Code change that doesn't add feature or fix bug |
 | `test` | Adding tests |
 | `chore` | Build, config, dependencies |
+| `style` | Formatting, no code change |
+| `perf` | Performance improvement |
 
 ### Examples
 
 ```bash
-# Feature
 git commit -m "feat: Add customer spawning system"
-
-# Bug fix
 git commit -m "fix: Correct isometric depth sorting"
-
-# Documentation
 git commit -m "docs: Update Phase 3 progress in ROADMAP"
-
-# Refactor
 git commit -m "refactor: Extract sprite batching into separate class"
-
-# Phase milestone
-git commit -m "feat: Complete Phase 3 - Renderer Abstraction
-
-- Metal backend with sprite batching
-- WebGL backend for web builds
-- Isometric tile rendering
-- Cross-platform demo working"
+git commit -m "test: Add unit tests for economy system"
+git commit -m "chore: Update CMake to 3.25"
 ```
 
-## Useful Commands
-
-### Undo Changes
-
-```bash
-# Discard changes to a file (not committed)
-git checkout -- src/main.cpp
-
-# Unstage a file (keep changes)
-git reset HEAD src/main.cpp
-
-# Undo last commit (keep changes)
-git reset --soft HEAD~1
-
-# Undo last commit (discard changes) - DANGEROUS
-git reset --hard HEAD~1
-```
-
-### View History
-
-```bash
-# Compact log
-git log --oneline
-
-# With graph
-git log --oneline --graph
-
-# Show specific commit
-git show abc1234
-
-# Show what changed in a file
-git log -p src/main.cpp
-```
-
-### Stash (Temporarily Save Work)
-
-```bash
-# Save current work without committing
-git stash
-
-# List stashes
-git stash list
-
-# Restore latest stash
-git stash pop
-
-# Restore specific stash
-git stash apply stash@{1}
-```
-
-### Tags (Mark Releases)
-
-```bash
-# Create tag
-git tag -a v0.1.0 -m "Phase 2 complete"
-
-# Push tags
-git push --tags
-
-# List tags
-git tag -l
-```
-
-## GitHub Desktop Alternative
-
-If you prefer GUI:
-
-1. Open GitHub Desktop
-2. File → Add Local Repository
-3. Select `/Users/ctg/Documents/GitHub/cafe-engine`
-4. Sign into your personal account (MarcusLai07)
-5. Use the GUI for commits and pushes
-
-**Note:** If GitHub Desktop is logged into work account:
-- Preferences → Accounts → Sign out of work account
-- Sign into MarcusLai07
-- Or use CLI for this repo, Desktop for work repos
-
-## Multiple GitHub Accounts
-
-### Per-Repo Config (Current Setup)
-
-```bash
-# This repo uses personal account
-cd /Users/ctg/Documents/GitHub/cafe-engine
-git config user.name "MarcusLai07"
-git config user.email "Marcus_Lai@live.com"
-
-# Work repos use global config
-git config --global user.name "WorkUsername"
-git config --global user.email "work@email.com"
-```
-
-### Check Current Config
-
-```bash
-# Repo-specific
-git config user.name
-git config user.email
-
-# Global
-git config --global user.name
-git config --global user.email
-```
+---
 
 ## Troubleshooting
 
 ### "Permission denied"
 
 ```bash
-# Check which account is being used
 gh auth status
-
-# Re-login
 gh auth login
 ```
 
 ### "Repository not found"
 
 ```bash
-# Verify remote URL
 git remote -v
-
-# Fix if wrong
 git remote set-url origin https://github.com/MarcusLai07/cafe-engine.git
 ```
 
 ### "Merge conflicts"
 
 ```bash
-# After a failed merge/pull, fix conflicts in files, then:
+# See conflicted files
+git status
+
+# Edit files to resolve conflicts (look for <<<<<<< markers)
+
+# After resolving
 git add .
 git commit -m "Resolve merge conflicts"
 ```
 
-### Wrong Account Pushing
+### "Detached HEAD"
 
 ```bash
-# Check repo config
-git config user.name
-git config user.email
+# Create branch to save work
+git checkout -b save-my-work
 
-# Fix for this repo
-git config user.name "MarcusLai07"
-git config user.email "Marcus_Lai@live.com"
+# Or go back to a branch
+git checkout main
 ```
 
-## Quick Reference
+### "Your branch is behind"
 
 ```bash
-# Daily workflow
-git status                  # Check what's changed
-git add .                   # Stage all changes
-git commit -m "message"     # Commit
-git push                    # Push to GitHub
-
-# Sync with remote
-git pull                    # Get latest
-
-# Branching
-git checkout -b new-branch  # Create & switch
-git checkout main           # Switch to main
-git merge branch-name       # Merge branch into current
-
-# Undo
-git checkout -- file        # Discard file changes
-git reset --soft HEAD~1     # Undo commit, keep changes
+git pull --rebase
+# Or
+git fetch
+git rebase origin/main
 ```
+
+### Undo Accidental Commit to Wrong Branch
+
+```bash
+# Save the commit hash
+git log -1  # Copy the hash
+
+# Reset current branch
+git reset --hard HEAD~1
+
+# Switch to correct branch and cherry-pick
+git checkout correct-branch
+git cherry-pick <hash>
+```
+
+---
+
+## GitHub CLI Commands
+
+```bash
+# Auth
+gh auth login
+gh auth status
+gh auth logout
+
+# Repo
+gh repo create
+gh repo clone MarcusLai07/cafe-engine
+gh repo view
+gh repo view --web  # Open in browser
+
+# Pull Requests
+gh pr create
+gh pr list
+gh pr view 123
+gh pr checkout 123
+gh pr merge 123
+
+# Issues
+gh issue create
+gh issue list
+gh issue view 123
+
+# Gists
+gh gist create file.txt
+gh gist list
+```
+
+---
+
+## Quick Reference Card
+
+```bash
+# === SETUP ===
+git config user.name "Name"
+git config user.email "email"
+git clone <url>
+git init
+
+# === DAILY ===
+git status              # What's changed?
+git diff                # See changes
+git add .               # Stage all
+git commit -m "msg"     # Commit
+git push                # Upload
+git pull                # Download
+
+# === BRANCHES ===
+git branch              # List
+git checkout -b name    # Create & switch
+git checkout main       # Switch
+git merge branch        # Merge
+git branch -d name      # Delete
+
+# === HISTORY ===
+git log --oneline       # View commits
+git show abc123         # View commit
+git blame file          # Who changed?
+
+# === UNDO ===
+git restore file        # Discard changes
+git restore --staged f  # Unstage
+git reset --soft HEAD~1 # Undo commit (keep changes)
+git reset --hard HEAD~1 # Undo commit (lose changes)
+git revert abc123       # Undo with new commit
+
+# === REMOTE ===
+git fetch               # Download (no merge)
+git pull                # Download + merge
+git push                # Upload
+git remote -v           # Show remotes
+
+# === STASH ===
+git stash               # Save temporarily
+git stash pop           # Restore
+git stash list          # Show stashes
+
+# === TAGS ===
+git tag v1.0.0          # Create
+git push --tags         # Push tags
+```
+
+---
 
 ## End of Phase Checklist
 
@@ -378,4 +1135,5 @@ When completing a phase:
 2. [ ] ROADMAP.md updated with `[x]` for completed tasks
 3. [ ] Commit message mentions phase completion
 4. [ ] Push to GitHub
-5. [ ] Optionally tag the release: `git tag -a v0.X.0 -m "Phase X complete"`
+5. [ ] Create tag: `git tag -a v0.X.0 -m "Phase X complete"`
+6. [ ] Push tag: `git push --tags`
