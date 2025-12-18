@@ -79,13 +79,13 @@ This document tracks the development phases, milestones, and current progress of
 
 | Task | Status | Description |
 |------|--------|-------------|
-| 4.1 Resource management | [ ] | Asset loading, caching, memory management |
-| 4.2 Entity-Component system | [ ] | Flexible game object architecture |
-| 4.3 Scene management | [ ] | Scene loading, transitions, lifecycle |
-| 4.4 Audio system | [ ] | Sound playback abstraction (CoreAudio, Web Audio) |
-| 4.5 Input mapping | [ ] | Action-based input, rebindable controls |
+| 4.1 Resource management | [x] | Asset loading, caching, memory management |
+| 4.2 Entity-Component system | [x] | Flexible game object architecture |
+| 4.3 Scene management | [x] | Scene loading, transitions, lifecycle |
+| 4.4 Audio system | [x] | Sound playback abstraction (CoreAudio, Web Audio) |
+| 4.5 Input mapping | [x] | Action-based input, rebindable controls |
 
-**Milestone**: Load scene file with positioned sprites and background music
+**Milestone**: Load scene file with positioned sprites and background music [COMPLETE]
 
 [Detailed Phase 4 Documentation](./phases/phase-4-core-engine/overview.md)
 
@@ -182,8 +182,8 @@ Phase:  [ P1  ][   P2    ][   P3    ][   P4    ][   P5    ][   P6    ][  P7   ][
 
 ## Current Focus
 
-**Active Phase**: Phase 3 - COMPLETE
+**Active Phase**: Phase 4 - COMPLETE
 
-**Next Phase**: Phase 4 - Core Engine Systems
+**Next Phase**: Phase 5 - Game Framework
 
-**Last Updated**: 2025-12-17 - Phase 3 complete! Added: WebGL renderer, web platform layer, image loading with stb_image, sprite sheets with animation, isometric tile system with depth sorting. Ready for web testing with Emscripten.
+**Last Updated**: 2025-12-18 - Phase 4 complete! Added: ResourceManager for asset loading/caching, Entity-Component System with Transform/SpriteRenderer/Animator/BoxCollider/Tag components, SceneManager with push/pop/replace operations, Audio system (AVFoundation for macOS, Web Audio API for web), InputMap with action-based input and rebindable controls.

@@ -30,6 +30,10 @@ set(CAFE_SOURCES
     src/engine/image.cpp
     src/engine/sprite_sheet.cpp
     src/engine/isometric.cpp
+    src/engine/resource.cpp
+    src/engine/entity.cpp
+    src/engine/scene.cpp
+    src/engine/input_map.cpp
 )
 
 # Platform-specific sources
@@ -37,6 +41,7 @@ if(APPLE)
     list(APPEND CAFE_SOURCES
         src/platform/macos/macos_platform.mm
         src/renderer/metal/metal_renderer.mm
+        src/audio/macos/macos_audio.mm
     )
 endif()
 
@@ -65,6 +70,8 @@ if(APPLE)
         "-framework QuartzCore"
         "-framework Metal"
         "-framework MetalKit"
+        "-framework AVFoundation"
+        "-framework AudioToolbox"
     )
 endif()
 
