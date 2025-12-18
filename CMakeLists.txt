@@ -27,6 +27,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CAFE_SOURCES
     src/main.cpp
     src/engine/game_loop.cpp
+    src/engine/image.cpp
+    src/engine/sprite_sheet.cpp
+    src/engine/isometric.cpp
 )
 
 # Platform-specific sources
@@ -44,6 +47,7 @@ add_executable(cafe_engine ${CAFE_SOURCES})
 target_include_directories(cafe_engine PRIVATE
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/third_party
 )
 
 # Compiler warnings (strict for learning)

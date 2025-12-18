@@ -58,14 +58,14 @@ This document tracks the development phases, milestones, and current progress of
 
 | Task | Status | Description |
 |------|--------|-------------|
-| 3.1 Design renderer interface | [ ] | Abstract GPU operations |
-| 3.2 Metal backend | [ ] | Implement interface for Metal |
-| 3.3 Emscripten setup | [ ] | WebAssembly toolchain configuration |
-| 3.4 WebGL backend | [ ] | Implement interface for WebGL |
-| 3.5 Sprite & texture system | [ ] | Load images, batch sprite rendering |
-| 3.6 Isometric tile rendering | [ ] | Tile maps, depth sorting |
+| 3.1 Design renderer interface | [x] | Abstract GPU operations |
+| 3.2 Metal backend | [x] | Implement interface for Metal |
+| 3.3 Emscripten setup | [x] | WebAssembly toolchain configuration |
+| 3.4 WebGL backend | [x] | Implement interface for WebGL |
+| 3.5 Sprite & texture system | [x] | Load images, batch sprite rendering |
+| 3.6 Isometric tile rendering | [x] | Tile maps, depth sorting |
 
-**Milestone**: Isometric tile demo runs on Mac + Web
+**Milestone**: Isometric tile demo runs on Mac + Web [COMPLETE]
 
 [Detailed Phase 3 Documentation](./phases/phase-3-renderer-abstraction/overview.md)
 
@@ -182,8 +182,8 @@ Phase:  [ P1  ][   P2    ][   P3    ][   P4    ][   P5    ][   P6    ][  P7   ][
 
 ## Current Focus
 
-**Active Phase**: Phase 2 - Platform Layer (macOS)
+**Active Phase**: Phase 3 - COMPLETE
 
-**Current Task**: Phase 2 Complete! Ready for Phase 3.
+**Next Phase**: Phase 4 - Core Engine Systems
 
-**Last Updated**: 2025-12-17 - Phase 2 COMPLETE! All 5 tasks done: Cocoa window, Metal rendering, shaders/draw_quad, input handling, fixed timestep game loop.
+**Last Updated**: 2025-12-17 - Phase 3 complete! Added: WebGL renderer, web platform layer, image loading with stb_image, sprite sheets with animation, isometric tile system with depth sorting. Ready for web testing with Emscripten.
